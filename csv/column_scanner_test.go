@@ -69,6 +69,20 @@ func (this *ColumnScannerFixture) TestColumnNotFound_Panic() {
 	this.So(func() { this.scanner.Column("nope") }, should.Panic)
 }
 
+// TestDuplicateColumnNames confirms that duplicated/repeated
+// column names results in the last repeated column being
+// added to the map and used to retrieve values for that name.
+func (this *ColumnScannerFixture) TestDuplicateColumnNames() {
+	scanner, err := NewColumnScanner(reader([]string{
+		"Col1,Col2,Col2",
+		"foo,bar,baz",
+	}))
+	this.So(err, should.BeNil)
+	this.So(scanner.Header(), should.Resemble, []string{"Col1", "Col2", "Col2"})
+	scanner.Scan()
+	this.So(scanner.Column("Col2"), should.Equal, "baz")
+}
+
 type User struct {
 	FirstName string
 	LastName  string
