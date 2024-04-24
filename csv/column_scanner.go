@@ -8,7 +8,9 @@ import (
 
 // ColumnScanner provides access to the fields of CSV-encoded
 // data by column name.  The scanner assumes the first
-// record in the data to be the header with column names.
+// record in the data to be the header with column names.  If
+// duplicate names exist in the header, the last column for the
+// duplicate name will be used.
 //
 // All configurations of the underlying *csv.Reader are available
 // through an [Option].
