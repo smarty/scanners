@@ -4,3 +4,5 @@
 [![Code Coverage](https://codecov.io/gh/smartystreets/scanners/branch/master/graph/badge.svg)](https://codecov.io/gh/smartystreets/scanners)
 [![Go Report Card](https://goreportcard.com/badge/github.com/smartystreets/scanners)](https://goreportcard.com/report/github.com/smartystreets/scanners)
 [![GoDoc](https://godoc.org/github.com/smartystreets/scanners?status.svg)](http://godoc.org/github.com/smartystreets/scanners)
+
+Explore [the package](https://pkg.go.dev/github.com/smartystreets/scanners) on pkg.go.dev.
