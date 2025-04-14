@@ -1,4 +1,4 @@
-module github.com/smarty/scanners
+module github.com/smarty/scanners/v2
 
 go 1.17
 

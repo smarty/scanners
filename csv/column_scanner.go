@@ -25,7 +25,7 @@ type ColumnScanner struct {
 // to be the header.  It calls Scan once to read the header; subsequent
 // calls to Scan will return the remaining records.
 func NewColumnScanner(reader io.Reader, options ...Option) (*ColumnScanner, error) {
-	inner := NewScanner(reader, append(options, FieldsPerRecord(0))...)
+	inner := NewScanner(reader, append(options, Options.FieldsPerRecord(0))...)
 	if !inner.Scan() {
 		return nil, inner.Error()
 	}

@@ -5,7 +5,7 @@ import (
 	"log"
 	"strings"
 
-	fw "github.com/smarty/scanners/fixedwidth"
+	fw "github.com/smarty/scanners/v2/fixedwidth"
 )
 
 func ExampleScanner() {
