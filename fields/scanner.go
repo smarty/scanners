@@ -14,8 +14,8 @@ import (
 // Scanner provides access to the whitespace-separated fields of
 // data.  Field values cannot contain any whitespace.
 //
-// For a file that follows the encoding scheme of a so-called TSV, use [github.com/smartystreets/scanners/csv.Scanner]
-// and configure it for tabs with [github.com/smartystreets/scanners/csv.Comma].
+// For a file that follows the encoding scheme of a so-called TSV, use [github.com/smarty/scanners/csv.Scanner]
+// and configure it for tabs with [github.com/smarty/scanners/csv.Comma].
 type Scanner struct {
 	*bufio.Scanner
 }

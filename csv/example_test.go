@@ -5,7 +5,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/smartystreets/scanners/csv"
+	"github.com/smarty/scanners/csv"
 )
 
 func ExampleScanner() {
