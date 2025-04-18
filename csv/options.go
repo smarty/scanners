@@ -54,6 +54,9 @@ func (options) TrimLeadingSpace(trim bool) Option {
 		s.reader.TrimLeadingSpace = trim
 	}
 }
+
+// SkipHeaderRecord skips the first record of the reader, regardless of its
+// contents.
 func (options) SkipHeaderRecord() Option {
 	return func(s *Scanner) {
 		s.Scan()

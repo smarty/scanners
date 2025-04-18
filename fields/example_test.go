@@ -5,7 +5,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/smarty/scanners/v2/fields"
+	"github.com/smarty/scanners/v3/fields"
 )
 
 // Justification of fields should not affect the scanned values.

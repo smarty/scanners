@@ -3,7 +3,7 @@
 // to unmarshaling JSON or XML).
 //
 // It thinly wraps the standard library's [csv.Reader] and exposes
-// most of its configuration "knobs" and behavior.  Knowledge of
+// most of its configuration "knobs" and behavior. Knowledge of
 // the csv.Reader will help in configuring and running these
 // scanners.
 //
@@ -45,10 +45,10 @@ func (this *Scanner) configure(options []Option) *Scanner {
 }
 
 // Scan advances the Scanner to the next record, which will then be available
-// through the [Scanner.Record] method. It returns false when the scan stops, either by
-// reaching the end of the input or an error. After Scan returns false, the
-// [Scanner.Error] method will return any error that occurred during scanning, except
-// that if it was io.EOF, Error will return nil.
+// through the [Scanner.Record] method. It returns false when the scan stops,
+// either by reaching the end of the input or an error. After Scan returns
+// false, the [Scanner.Error] method will return any error that occurred
+// during scanning, except that if it was io.EOF, Error will return nil.
 func (this *Scanner) Scan() bool {
 	if this.eof() {
 		return false
@@ -77,7 +77,7 @@ func (this *Scanner) Record() []string {
 }
 
 // Error returns the last non-nil error produced by Scan (if there was one).
-// It will not ever return io.EOF. This method may be called at any point
+// It will never return io.EOF. This method may be called at any point
 // during or after scanning but the underlying err will be reset by each call
 // to Scan.
 func (this *Scanner) Error() error {

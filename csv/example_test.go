@@ -5,7 +5,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/smarty/scanners/v2/csv"
+	"github.com/smarty/scanners/v3/csv"
 )
 
 func ExampleScanner() {
@@ -61,7 +61,7 @@ func ExampleScanner_options() {
 }
 
 // A ColumnScanner maps field values in each row to column
-// names.  The column name is taken from the first row, which
+// names. The column name is taken from the first row, which
 // is assumed to be the header row.
 func ExampleColumnScanner() {
 	in := strings.Join([]string{
@@ -70,7 +70,7 @@ func ExampleColumnScanner() {
 		`Ken,Thompson,ken`,
 		`"Robert","Griesemer","gri"`,
 	}, "\n")
-	scanner, _ := csv.NewColumnScanner(strings.NewReader(in))
+	scanner, _ := csv.NewColumnScanner(csv.NewScanner(strings.NewReader(in)))
 
 	for scanner.Scan() {
 		fmt.Println(scanner.Column("last_name"), scanner.Column("first_name"))

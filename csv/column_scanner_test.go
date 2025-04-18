@@ -17,42 +17,39 @@ type ColumnScannerFixture struct {
 
 	scanner *ColumnScanner
 	err     error
-	users   []User
 }
 
 func (this *ColumnScannerFixture) Setup() {
-	this.scanner, this.err = NewColumnScanner(reader(csvCanon))
+	this.scanner, this.err = NewColumnScanner(NewScanner(reader(csvCanon)))
 	this.So(this.err, should.BeNil)
 	this.So(this.scanner.Header(), should.Resemble, []string{"first_name", "last_name", "username"})
 }
 
-func (this *ColumnScannerFixture) ScanAllUsers() {
-	for this.scanner.Scan() {
-		this.users = append(this.users, this.scanUser())
+func ScanAllUsers(scanner *ColumnScanner) []User {
+	users := []User{}
+	for scanner.Scan() {
+		users = append(users, User{
+			FirstName: scanner.Column(scanner.Header()[0]),
+			LastName:  scanner.Column(scanner.Header()[1]),
+			Username:  scanner.Column(scanner.Header()[2]),
+		})
 	}
+	return users
 }
 
 func (this *ColumnScannerFixture) TestReadColumns() {
-	this.ScanAllUsers()
+	users := ScanAllUsers(this.scanner)
 
 	this.So(this.scanner.Error(), should.BeNil)
-	this.So(this.users, should.Resemble, []User{
+	this.So(users, should.Resemble, []User{
 		{FirstName: "Rob", LastName: "Pike", Username: "rob"},
 		{FirstName: "Ken", LastName: "Thompson", Username: "ken"},
 		{FirstName: "Robert", LastName: "Griesemer", Username: "gri"},
 	})
 }
 
-func (this *ColumnScannerFixture) scanUser() User {
-	return User{
-		FirstName: this.scanner.Column(this.scanner.Header()[0]),
-		LastName:  this.scanner.Column(this.scanner.Header()[1]),
-		Username:  this.scanner.Column(this.scanner.Header()[2]),
-	}
-}
-
 func (this *ColumnScannerFixture) TestCannotReadHeader() {
-	scanner, err := NewColumnScanner(new(ErrorReader))
+	scanner, err := NewColumnScanner(NewScanner(new(ErrorReader)))
 	this.So(scanner, should.BeNil)
 	this.So(err, should.NotBeNil)
 }
@@ -73,14 +70,30 @@ func (this *ColumnScannerFixture) TestColumnNotFound_Panic() {
 // column names results in the last repeated column being
 // added to the map and used to retrieve values for that name.
 func (this *ColumnScannerFixture) TestDuplicateColumnNames() {
-	scanner, err := NewColumnScanner(reader([]string{
+	scanner, err := NewColumnScanner(NewScanner(reader([]string{
 		"Col1,Col2,Col2",
 		"foo,bar,baz",
-	}))
+	})))
 	this.So(err, should.BeNil)
 	this.So(scanner.Header(), should.Resemble, []string{"Col1", "Col2", "Col2"})
 	scanner.Scan()
 	this.So(scanner.Column("Col2"), should.Equal, "baz")
+}
+
+func (this *ColumnScannerFixture) TestColumnOpt_ToUpperHeader() {
+	data := append([]string{"first_name,LAST_NAME,uSeRNaMe"}, csvCanon[1:]...)
+	scanner, err := NewColumnScanner(
+		NewScanner(reader(data)),
+		ColumnOpts.ToUpperHeader())
+	this.So(err, should.BeNil)
+
+	users := ScanAllUsers(scanner)
+	this.So(this.scanner.Error(), should.BeNil)
+	this.So(users, should.Resemble, []User{
+		{FirstName: "Rob", LastName: "Pike", Username: "rob"},
+		{FirstName: "Ken", LastName: "Thompson", Username: "ken"},
+		{FirstName: "Robert", LastName: "Griesemer", Username: "gri"},
+	})
 }
 
 type User struct {

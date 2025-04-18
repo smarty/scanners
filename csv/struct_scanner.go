@@ -22,7 +22,7 @@ type StructScanner struct {
 // NewStructScanner returns a StructScanner that reads from reader,
 // configured with the provided options.
 func NewStructScanner(reader io.Reader, options ...Option) (*StructScanner, error) {
-	inner, err := NewColumnScanner(reader, options...)
+	inner, err := NewColumnScanner(NewScanner(reader, options...))
 	if err != nil {
 		return nil, err
 	}
