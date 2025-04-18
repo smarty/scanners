@@ -49,16 +49,14 @@ func (columnOpts) Header(header []string) ColumnOpt {
 // to be the header. It calls Scan once to read the header; subsequent
 // calls to Scan will return the remaining records.
 func NewColumnScanner(scanner *Scanner, options ...ColumnOpt) (*ColumnScanner, error) {
-	if !scanner.Scan() {
-		return nil, scanner.Error()
-	}
 	cs := &ColumnScanner{
-		Scanner:      scanner,
-		headerRecord: scanner.Record(),
-		columnIndex:  make(map[string]int),
+		Scanner:     scanner,
+		columnIndex: make(map[string]int),
 	}
 	cs.configure(options)
-	cs.readHeader()
+	if err := cs.readHeader(); err != nil {
+		return nil, err
+	}
 	return cs, nil
 }
 func (this *ColumnScanner) configure(options []ColumnOpt) {
@@ -67,13 +65,20 @@ func (this *ColumnScanner) configure(options []ColumnOpt) {
 	}
 }
 
-func (this *ColumnScanner) readHeader() {
+func (this *ColumnScanner) readHeader() error {
+	if len(this.headerRecord) < 1 {
+		if !this.Scanner.Scan() {
+			return this.Scanner.Error()
+		}
+		this.headerRecord = this.Scanner.Record()
+	}
 	for i := range this.headerRecord {
 		if this.toUpperHeader {
 			this.headerRecord[i] = strings.ToUpper(this.headerRecord[i])
 		}
 		this.columnIndex[this.headerRecord[i]] = i
 	}
+	return nil
 }
 
 // Header returns the header record.

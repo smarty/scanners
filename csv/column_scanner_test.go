@@ -96,6 +96,41 @@ func (this *ColumnScannerFixture) TestColumnOpt_ToUpperHeader() {
 	})
 }
 
+func (this *ColumnScannerFixture) TestColumnOpt_Header() {
+	header := []string{"first_name", "last_name", "username"}
+	scanner, err := NewColumnScanner(
+		NewScanner(reader(csvCanon[1:])),
+		ColumnOpts.Header(header),
+	)
+	this.So(err, should.BeNil)
+
+	users := ScanAllUsers(scanner)
+	this.So(this.scanner.Error(), should.BeNil)
+	this.So(users, should.Resemble, []User{
+		{FirstName: "Rob", LastName: "Pike", Username: "rob"},
+		{FirstName: "Ken", LastName: "Thompson", Username: "ken"},
+		{FirstName: "Robert", LastName: "Griesemer", Username: "gri"},
+	})
+}
+
+func (this *ColumnScannerFixture) TestCustomUpperHeader() {
+	header := []string{"FIRST", "last", "uSEr"}
+	scanner, err := NewColumnScanner(
+		NewScanner(reader(csvCanon), Options.SkipHeaderRecord()),
+		ColumnOpts.Header(header),
+		ColumnOpts.ToUpperHeader(),
+	)
+	this.So(err, should.BeNil)
+
+	users := ScanAllUsers(scanner)
+	this.So(this.scanner.Error(), should.BeNil)
+	this.So(users, should.Resemble, []User{
+		{FirstName: "Rob", LastName: "Pike", Username: "rob"},
+		{FirstName: "Ken", LastName: "Thompson", Username: "ken"},
+		{FirstName: "Robert", LastName: "Griesemer", Username: "gri"},
+	})
+}
+
 type User struct {
 	FirstName string
 	LastName  string
